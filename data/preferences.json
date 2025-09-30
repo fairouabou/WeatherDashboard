@@ -1,0 +1,25 @@
+{
+    "favorites": [],
+    "history": [
+        {
+            "city": "Monza",
+            "country": "IT"
+        },
+        {
+            "city": "Seregno",
+            "country": "IT"
+        },
+        {
+            "city": "Sardegna",
+            "country": "IT"
+        },
+        {
+            "city": "Milano",
+            "country": "IT"
+        },
+        {
+            "city": "Cairo",
+            "country": "EG"
+        }
+    ]
+}

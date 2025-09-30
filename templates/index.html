@@ -4,42 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; 
+        }
+        .search-bar {
+            max-width: 100%; 
+            margin: 0 auto;
+        }
+        .weather-card {
+            width: 100%;
+        }
+        .side-card {
+            border-radius: 8px;
+        }
+        .list-group-item {
+            border: none;
+            text-align: center; 
+            font-weight: 500;
+            color: #333; 
+        }
+        .list-group-item button {
+            background: none;
+            border: none;
+            color: inherit; 
+            font: inherit;
+            padding: 0;
+            cursor: pointer;
+        }
+        .list-group-item button:hover {
+            text-decoration: none;
+            color: #000;
+        }
+    </style>
+</head>
 
-<body class="bg-info text-white">
-    <div class="text-center">
-        <h1 class="mt-5">Weather Dashboard</h1>
-        <form action="/" method="post">
-            <div class="container">
-                <div class = "row">
-                    <div class="col-sm">
-                        <input type="text" id="cityName" name="cityName", placeholder="City" class="form-control">
-                    </div>
-                    <div class="col-sm">
-                        <input type="text" id="countryName" name="countryName", placeholder="Country" class="form-control">
-                    </div>                             
-                </div>              
-            </div> <br>
-            <button class="submit btn btn-light">Search</button>
+<body>
+    <div class="container py-4">
+        <h1 class="text-center mb-4">Weather Dashboard</h1>
+
+        <form action="/" method="post" class="search-bar mb-4">
+            <div class="input-group">
+                <input type="text" id="cityName" name="cityName" placeholder="City" class="form-control" required>
+                <input type="text" id="countryName" name="countryName" placeholder="Country Code (e.g. ES, GB, FR)" class="form-control" required>
+                <button class="btn btn-dark">Search</button>
+            </div>
         </form>
-        {% if data %}
-        <div class="card text-dark bg-light mt-4 mx-auto" style="max-width: 400px;">
-          <div class="card-body text-center">
-            <h3>{{ data.city }}, {{ data.country }}</h3>
-            <img src="https://openweathermap.org/img/wn/{{ data.icon }}@2x.png" alt="Weather Icon">
-            <h2>{{ data.temperature }} °C</h2>
-            <p class="mb-1"><strong>{{ data.main }}</strong> – {{ data.description }}</p>
-            <p>Humidity: {{ data.humidity }}%</p>
-          </div>
+
+        {% if error %}
+        <div class="d-flex justify-content-center">
+            <div class="alert alert-danger text-center" role="alert" style="max-width: 600px; width: 100%;">
+                {{ error }}
+            </div>
         </div>
         {% endif %}
-        
 
+        <div class="row">
+            <div class="col-md-8">
+                {% if data %}
+                <div class="card text-dark bg-white shadow-sm mb-4 weather-card">
+                    <div class="card-body text-center">
+                        <h3>{{ data.city }}, {{ data.country }}</h3>
+                        <img src="https://openweathermap.org/img/wn/{{ data.icon }}@2x.png" alt="Weather Icon">
+                        <h2>{{ data.temperature }} °C</h2>
+                        <p class="mb-1"><strong>{{ data.main }}</strong> – {{ data.description }}</p>
+                        <p>Humidity: {{ data.humidity }}%</p>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    
+                        <form action="/favorite" method="post">
+                            <input type="hidden" name="city" value="{{ data.city }}">
+                            <input type="hidden" name="country" value="{{ data.country }}">
+                            <button type="submit" class="btn btn-warning mt-2">Add to Favorites</button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-dark shadow-sm mb-3 side-card">
+                    <div class="card-header bg-white fw-bold text-center">
+                        Favorites
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for fav in favorites %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <form action="/" method="post" class="flex-grow-1 text-center">
+                                <input type="hidden" name="cityName" value="{{ fav.city }}">
+                                <input type="hidden" name="countryName" value="{{ fav.country }}">
+                                <button type="submit">{{ fav.city }}, {{ fav.country }}</button>
+                            </form>
+                            <form action="/remove_favorite" method="post" class="ms-2">
+                                <input type="hidden" name="city" value="{{ fav.city }}">
+                                <input type="hidden" name="country" value="{{ fav.country }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">✕</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-muted">No favorites yet</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="card text-dark shadow-sm side-card">
+                    <div class="card-header bg-white fw-bold text-center">
+                        Recent Searches
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for item in history %}
+                        <li class="list-group-item">
+                            <form action="/" method="post" class="text-center">
+                                <input type="hidden" name="cityName" value="{{ item.city }}">
+                                <input type="hidden" name="countryName" value="{{ item.country }}">
+                                <button type="submit">{{ item.city }}, {{ item.country }}</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-muted">No recent searches</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
