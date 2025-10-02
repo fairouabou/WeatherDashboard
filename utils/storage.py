@@ -1,3 +1,7 @@
+"""
+Handles loading and saving user preferences (favorites and history) to a JSON file.
+"""
+
 import json
 import os
 
@@ -17,7 +21,15 @@ def save_data(data):
         json.dump(data, f, indent=4)
 
 def add_to_history(city, country):
-    """Add a search entry to history (keep only last 5)."""
+    """Adds the user search entry (which includes city and country) to the top of the the history list.
+
+    It stores only up to 5 unique entries and is trimmed to only keep this number of searches.
+
+    Args: 
+    - city (str): The name of the city.
+    - country (str): The name of the country.
+    """
+
     data = load_data()
     entry = {"city": city, "country": country}
     if entry not in data["history"]:
@@ -26,7 +38,7 @@ def add_to_history(city, country):
     save_data(data)
 
 def add_to_favorites(city, country):
-    """Add a city to favorites."""
+    """Add a city to favorites if it's not already present."""
     data = load_data()
     entry = {"city": city, "country": country}
     if entry not in data["favorites"]:
@@ -40,7 +52,9 @@ def remove_favorite(city, country):
     save_data(data)
 
 def get_history():
+    """Returns the list of user search history entries."""
     return load_data().get("history", [])
 
 def get_favorites():
+    """Returns the list of favorite cities."""
     return load_data().get("favorites", [])

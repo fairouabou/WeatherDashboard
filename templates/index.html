@@ -6,6 +6,7 @@
     <title>Weather Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Page styles */
         body {
             background-color: #f8f9fa; 
         }
@@ -44,6 +45,7 @@
     <div class="container py-4">
         <h1 class="text-center mb-4">Weather Dashboard</h1>
 
+        <!-- Search Form -->
         <form action="/" method="post" class="search-bar mb-4">
             <div class="input-group">
                 <input type="text" id="cityName" name="cityName" placeholder="City" class="form-control" required>
@@ -52,6 +54,7 @@
             </div>
         </form>
 
+        <!-- Error Message -->
         {% if error %}
         <div class="d-flex justify-content-center">
             <div class="alert alert-danger text-center" role="alert" style="max-width: 600px; width: 100%;">
@@ -61,6 +64,7 @@
         {% endif %}
 
         <div class="row">
+            <!-- Weather Display and Side Panels -->
             <div class="col-md-8">
                 {% if data %}
                 <div class="card text-dark bg-white shadow-sm mb-4 weather-card">
@@ -71,6 +75,7 @@
                         <p class="mb-1"><strong>{{ data.main }}</strong> – {{ data.description }}</p>
                         <p>Humidity: {{ data.humidity }}%</p>
 
+                        <!-- Add to Favorites Button -->
                         <form action="/favorite" method="post">
                             <input type="hidden" name="city" value="{{ data.city }}">
                             <input type="hidden" name="country" value="{{ data.country }}">
@@ -81,7 +86,10 @@
                 {% endif %}
             </div>
 
+            <!-- Sidebar: Favorites and History Panels -->
             <div class="col-md-4">
+
+                <!-- Favorites Panel -->
                 <div class="card text-dark shadow-sm mb-3 side-card">
                     <div class="card-header bg-white fw-bold text-center">
                         Favorites
@@ -106,6 +114,7 @@
                     </ul>
                 </div>
 
+                <!-- Recent Searches Panel -->
                 <div class="card text-dark shadow-sm side-card">
                     <div class="card-header bg-white fw-bold text-center">
                         Recent Searches
@@ -128,6 +137,7 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

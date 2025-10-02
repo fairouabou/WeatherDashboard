@@ -1,16 +1,25 @@
 {
-    "favorites": [],
+    "favorites": [
+        {
+            "city": "Podgorica",
+            "country": "MNE"
+        },
+        {
+            "city": "Milano",
+            "country": "IT"
+        },
+        {
+            "city": "Copenhagen",
+            "country": "DNK"
+        },
+        {
+            "city": "Doha",
+            "country": "QA"
+        }
+    ],
     "history": [
         {
             "city": "Monza",
-            "country": "IT"
-        },
-        {
-            "city": "Seregno",
-            "country": "IT"
-        },
-        {
-            "city": "Sardegna",
             "country": "IT"
         },
         {
@@ -18,8 +27,16 @@
             "country": "IT"
         },
         {
-            "city": "Cairo",
-            "country": "EG"
+            "city": "Doha",
+            "country": "QA"
+        },
+        {
+            "city": "Marrakesh",
+            "country": "MA"
+        },
+        {
+            "city": "Copenhagen",
+            "country": "DNK"
         }
     ]
 }

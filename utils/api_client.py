@@ -1,13 +1,32 @@
+"""
+Handles interactions with the OpenWeatherMap API to fetch weather data based on city and country.
+Provides functions to get latitude and longitude, as well as current weather information.
+"""
+
 import requests
 from dotenv import load_dotenv
 import os
 from dataclasses import dataclass
 
+# Load API key from .env file
 load_dotenv()
 api_key = os.getenv("API_KEY")
 
 @dataclass
 class WeatherData:
+    """
+    Data structure to hold weather information.
+
+    Attributes:
+        main (str): Main weather condition.
+        description (str): Detailed weather description.
+        icon (str): Icon code for the weather condition.
+        temperature (float): Current temperature in Celsius.
+        humidity (int): Current humidity percentage.
+        city (str): City name.
+        country (str): Country code.
+    """
+    
     main: str
     description: str
     icon: str
@@ -17,6 +36,16 @@ class WeatherData:
     country: str
 
 def get_lan_lon(city_name, country_code, API_key):
+    """
+    Fetches latitude and longitude for a given city and country using OpenWeatherMap Geocoding API.
+     Args:
+        city_name (str): The name of the city.
+        country_code (str): The country code (e.g., "US" for the United States).
+        API_key (str): Your OpenWeatherMap API key.
+        Returns:
+        tuple: A tuple containing latitude and longitude (lat, lon). Returns (None, None) if not found or on error.
+    """
+
     try:
         resp = requests.get(
             f"http://api.openweathermap.org/geo/1.0/direct?q={city_name},{country_code}&appid={API_key}",
@@ -25,7 +54,7 @@ def get_lan_lon(city_name, country_code, API_key):
         resp.raise_for_status()
         data = resp.json()
 
-        if not data:  # no results
+        if not data:  
             return None, None
 
         lat, lon = data[0].get("lat"), data[0].get("lon")
@@ -35,6 +64,19 @@ def get_lan_lon(city_name, country_code, API_key):
         return None, None
 
 def get_current_weather(lat, lon, API_key, city_name, country_name):
+    """
+    Fetches current weather data for given latitude and longitude using OpenWeatherMap Current Weather Data API
+    Args:
+        lat (float): Latitude of the location.
+        lon (float): Longitude of the location.
+        API_key (str): Your OpenWeatherMap API key.
+        city_name (str): The name of the city.
+        country_name (str): The name of the country.
+    
+    Returns:
+        WeatherData: An instance of WeatherData containing current weather information. Returns None on error.
+    """
+
     if lat is None or lon is None:
         return None
 
@@ -63,6 +105,16 @@ def get_current_weather(lat, lon, API_key, city_name, country_name):
         return None
 
 def main(city_name, country_name):
+    """
+    Main function to get weather data for a city and country.
+    Args:
+        city_name (str): The name of the city.
+        country_name (str): The country code (e.g., "US" for the United States).
+    
+    Returns:
+        WeatherData: An instance of WeatherData containing current weather information. Returns None on error.  
+    """
+
     lat, lon = get_lan_lon(city_name, country_name, api_key)
     if lat is None or lon is None:
         return None
