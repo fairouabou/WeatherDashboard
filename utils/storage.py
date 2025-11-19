@@ -13,7 +13,10 @@ class StorageService:
     This allows dependency injection and easy mocking during tests.
     """
 
-    def __init__(self, file_path):
+    def __init__(self, file_path=None):
+        if file_path is None:
+            base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            file_path = os.path.join(base, "data", "preferences.json")
         self.file_path = file_path
 
     def _load(self):

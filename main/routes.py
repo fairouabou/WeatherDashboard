@@ -8,12 +8,7 @@ import os
 API_KEY = os.getenv("API_KEY")
 weather_service = WeatherService(API_KEY)
 
-# Build file path for preferences.json
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PREF_PATH = os.path.join(BASE_DIR, "data", "preferences.json")
-
-storage = StorageService(PREF_PATH)
-
+storage = StorageService()
 
 @main_bp.route("/", methods=["GET", "POST"])
 def index():

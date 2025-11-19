@@ -1,16 +1,20 @@
 {
     "favorites": [
         {
-            "city": "Cairo",
-            "country": "EG"
-        },
-        {
             "city": "Berkley",
             "country": "US"
         },
         {
             "city": "Richmond",
             "country": "USA"
+        },
+        {
+            "city": "Doha",
+            "country": "QA"
+        },
+        {
+            "city": "Monza",
+            "country": "IT"
         }
     ],
     "history": [
