@@ -5,7 +5,8 @@ Handles loading and saving user preferences (favorites and history) to a JSON fi
 import json
 import os
 
-FILE_PATH = "/Users/fairouz/Desktop/IE/YEAR3/SEM1/DevOPS/WeatherDashboard/data/preferences.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FILE_PATH = os.path.join(BASE_DIR, "data", "preferences.json")
 
 
 def load_data():

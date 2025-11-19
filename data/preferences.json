@@ -1,42 +1,42 @@
 {
     "favorites": [
         {
-            "city": "Podgorica",
-            "country": "MNE"
-        },
-        {
-            "city": "Milano",
-            "country": "IT"
-        },
-        {
             "city": "Copenhagen",
             "country": "DNK"
         },
         {
             "city": "Doha",
             "country": "QA"
+        },
+        {
+            "city": "Cairo",
+            "country": "EG"
+        },
+        {
+            "city": "Berkley",
+            "country": "US"
         }
     ],
     "history": [
         {
-            "city": "Monza",
-            "country": "IT"
+            "city": "Paris ",
+            "country": "FR"
         },
         {
-            "city": "Milano",
-            "country": "IT"
+            "city": "Madrid",
+            "country": "ES"
         },
         {
-            "city": "Doha",
-            "country": "QA"
+            "city": "Richmond",
+            "country": "USA"
         },
         {
-            "city": "Marrakesh",
-            "country": "MA"
+            "city": "Berkley",
+            "country": "US"
         },
         {
-            "city": "Copenhagen",
-            "country": "DNK"
+            "city": "Port Said",
+            "country": "EG"
         }
     ]
 }
