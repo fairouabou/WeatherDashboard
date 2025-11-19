@@ -1,9 +1,10 @@
-from flask import Flask
+from flask import Blueprint
 
-def create_app():
-    app = Flask(__name__)
+main_bp = Blueprint(
+    "main",
+    __name__,
+    template_folder="templates"
+)
 
-    from .routes import main_bp
-    app.register_blueprint(main_bp)
-
-    return app
+# IMPORTANT: import routes AFTER creating the blueprint
+from . import routes
