@@ -1,0 +1,43 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-mock
+
+    - name: Run tests with coverage
+      run: |
+        pytest --cov=. --cov-report=term-missing --cov-report=xml
+
+    - name: Enforce minimum coverage (70%)
+      run: |
+        total=$(awk -F'"' '/line-rate/{print $2*100; exit}' coverage.xml)
+        echo "Total coverage: $total%"
+        if (( $(echo "$total < 70" | bc -l) )); then
+          echo "Coverage below 70%!"
+          exit 1
+        fi
+
+    - name: Build application (import test)
+      run: |
+        python -c "import app; print('App imports correctly')"
