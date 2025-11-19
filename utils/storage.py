@@ -1,61 +1,64 @@
 """
-Handles loading and saving user preferences (favorites and history) to a JSON file.
+Handles loading and saving user preferences (favorites and history) using a StorageService class.
+Refactored to follow SOLID principles and improve testability.
 """
 
 import json
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FILE_PATH = os.path.join(BASE_DIR, "data", "preferences.json")
 
-
-def load_data():
-    """Load favorites and history from JSON file."""
-    if not os.path.exists(FILE_PATH):
-        return {"favorites": [], "history": []}
-    with open(FILE_PATH, "r") as f:
-        return json.load(f)
-
-def save_data(data):
-    """Save favorites and history back to JSON file."""
-    with open(FILE_PATH, "w") as f:
-        json.dump(data, f, indent=4)
-
-def add_to_history(city, country):
-    """Adds the user search entry (which includes city and country) to the top of the the history list.
-
-    It stores only up to 5 unique entries and is trimmed to only keep this number of searches.
-
-    Args: 
-    - city (str): The name of the city.
-    - country (str): The name of the country.
+class StorageService:
+    """
+    Class responsible for managing loading and saving user data.
+    This allows dependency injection and easy mocking during tests.
     """
 
-    data = load_data()
-    entry = {"city": city, "country": country}
-    if entry not in data["history"]:
-        data["history"].insert(0, entry)  
-        data["history"] = data["history"][:5]  
-    save_data(data)
+    def __init__(self, file_path):
+        self.file_path = file_path
 
-def add_to_favorites(city, country):
-    """Add a city to favorites if it's not already present."""
-    data = load_data()
-    entry = {"city": city, "country": country}
-    if entry not in data["favorites"]:
-        data["favorites"].append(entry)
-    save_data(data)
+    def _load(self):
+        """Internal: load JSON data."""
+        if not os.path.exists(self.file_path):
+            return {"favorites": [], "history": []}
+        with open(self.file_path, "r") as f:
+            return json.load(f)
 
-def remove_favorite(city, country):
-    """Remove a city from favorites."""
-    data = load_data()
-    data["favorites"] = [f for f in data["favorites"] if not (f["city"] == city and f["country"] == country)]
-    save_data(data)
+    def _save(self, data):
+        """Internal: save JSON data."""
+        with open(self.file_path, "w") as f:
+            json.dump(data, f, indent=4)
 
-def get_history():
-    """Returns the list of user search history entries."""
-    return load_data().get("history", [])
+    # ---------- Public API ----------
 
-def get_favorites():
-    """Returns the list of favorite cities."""
-    return load_data().get("favorites", [])
+    def get_history(self):
+        return self._load().get("history", [])
+
+    def get_favorites(self):
+        return self._load().get("favorites", [])
+
+    def add_to_history(self, city, country):
+        data = self._load()
+        entry = {"city": city, "country": country}
+
+        if entry not in data["history"]:
+            data["history"].insert(0, entry)
+            data["history"] = data["history"][:5]
+
+        self._save(data)
+
+    def add_to_favorites(self, city, country):
+        data = self._load()
+        entry = {"city": city, "country": country}
+
+        if entry not in data["favorites"]:
+            data["favorites"].append(entry)
+
+        self._save(data)
+
+    def remove_favorite(self, city, country):
+        data = self._load()
+        data["favorites"] = [
+            f for f in data["favorites"]
+            if not (f["city"] == city and f["country"] == country)
+        ]
+        self._save(data)

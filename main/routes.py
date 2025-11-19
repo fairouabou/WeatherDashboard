@@ -1,13 +1,18 @@
+from flask import render_template, request, redirect, url_for
 from main import main_bp
-from flask import Blueprint, render_template, request, redirect, url_for
-from utils.api_client import main as get_weather_data
-from utils.storage import (
-    add_to_history,
-    add_to_favorites,
-    remove_favorite,
-    get_history,
-    get_favorites,
-)
+from utils.api_client import WeatherService
+from utils.storage import StorageService
+import os
+
+# Load API key and prepare services
+API_KEY = os.getenv("API_KEY")
+weather_service = WeatherService(API_KEY)
+
+# Build file path for preferences.json
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PREF_PATH = os.path.join(BASE_DIR, "data", "preferences.json")
+
+storage = StorageService(PREF_PATH)
 
 
 @main_bp.route("/", methods=["GET", "POST"])
@@ -20,17 +25,17 @@ def index():
         country = request.form.get("countryName")
 
         if city and country:
-            data = get_weather_data(city, country)
+            data = weather_service.fetch(city, country)
 
             if data is None:
                 error = "Could not find weather for that location."
             else:
-                add_to_history(city, country)
+                storage.add_to_history(city, country)
         else:
             error = "Please enter both a city and a country code."
 
-    favorites = get_favorites()
-    history = get_history()
+    favorites = storage.get_favorites()
+    history = storage.get_history()
 
     return render_template(
         "index.html",
@@ -40,16 +45,18 @@ def index():
         history=history
     )
 
+
 @main_bp.route("/favorite", methods=["POST"])
 def favorite():
     city = request.form.get("city")
     country = request.form.get("country")
-    add_to_favorites(city, country)
+    storage.add_to_favorites(city, country)
     return redirect(url_for("main.index"))
+
 
 @main_bp.route("/remove_favorite", methods=["POST"])
 def remove_favorite_route():
     city = request.form.get("city")
     country = request.form.get("country")
-    remove_favorite(city, country)
+    storage.remove_favorite(city, country)
     return redirect(url_for("main.index"))

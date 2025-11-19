@@ -1,23 +1,27 @@
 {
     "favorites": [
         {
-            "city": "Copenhagen",
-            "country": "DNK"
-        },
-        {
-            "city": "Doha",
-            "country": "QA"
-        },
-        {
             "city": "Cairo",
             "country": "EG"
         },
         {
             "city": "Berkley",
             "country": "US"
+        },
+        {
+            "city": "Richmond",
+            "country": "USA"
         }
     ],
     "history": [
+        {
+            "city": "Monza",
+            "country": "IT"
+        },
+        {
+            "city": "Doha",
+            "country": "QA"
+        },
         {
             "city": "Paris ",
             "country": "FR"
@@ -29,14 +33,6 @@
         {
             "city": "Richmond",
             "country": "USA"
-        },
-        {
-            "city": "Berkley",
-            "country": "US"
-        },
-        {
-            "city": "Port Said",
-            "country": "EG"
         }
     ]
 }
