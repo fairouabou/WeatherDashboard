@@ -4,6 +4,10 @@
 
 This project consists of a Weather Dashboard which displays the weather condition and related information regarding a city that a user enters. The Dashabord interacts with the user through UI/UX, and is both user-friendly & intuitive. 
 
+![CI](https://github.com/fairouzabou/WeatherDashboard2/actions/workflows/ci.yml/badge.svg)
+![coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)
+
+
 ## Features
 - Search real-time weather by city and country  
 - Display temperature, condition, humidity, and weather icons  
@@ -14,21 +18,31 @@ This project consists of a Weather Dashboard which displays the weather conditio
 
 ## Project Structure
 WeatherDashboard/
-├── app.py # Main Flask application
+├── app.py # Main Flask entrypoint
 ├── requirements.txt # Python dependencies
 ├── README.md # Project documentation
-├── .gitignore # Git ignore rules
-├── .env # Environment variables (ignored in Git)
+├── pytest.ini # Pytest configuration
+├── .coverage # Coverage data file (generated automatically)
+├── htmlcov/ # HTML coverage report (generated automatically)
 │
 ├── data/
 │ └── preferences.json # Stores favorites and recent searches
 │
-├── templates/
-│ └── index.html # Frontend UI (Bootstrap + Jinja2)
+├── main/
+│ └── routes.py # Flask routes
+│ └── templates/
+│ └── index.html # Frontend UI
+│
 │
 └── utils/
 ├── api_client.py # Handles API requests to OpenWeatherMap
 └── storage.py # JSON storage logic for favorites & history
+│
+└── tests/
+│ └── tests_api_client.py 
+│ └── test_routes.py
+│ └── test_storage.py
+
 
 ## Requirements
 Before installing and running this project, make sure you have:
@@ -71,5 +85,33 @@ Python dependencies (also listed in `requirements.txt`):
 
 6. **Open in browser**
     *Go to http://127.0.0.1:5000 to access the Weather Dashboard.
+
+
+## Running tests: 
+To run all tests: 
+pytest -vv 
+
+To run tests with coverage: 
+pytest --cov=. --cov-report=term-missing --cov-report=xml
+
+Viee HTML coverage report: 
+htmlcov/index.html
+
+Coverage is also stored in:
+- .coverage
+- coverage.xml
+- htmlcov/ folder
+
+## Continous Integration (CI):
+This project includes a full CI pipeline using GitHub Actions:
+- Runs all tests
+- Measures code coverage
+- Generates HTML & XML coverage reports
+- Fails if coverage drops below 70%
+- Builds the application by importing app.py
+
+The pipeline is located at: 
+.github/workflows/ci.yml
+
 
 

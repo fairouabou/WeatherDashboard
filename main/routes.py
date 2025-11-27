@@ -55,3 +55,7 @@ def remove_favorite_route():
     country = request.form.get("country")
     storage.remove_favorite(city, country)
     return redirect(url_for("main.index"))
+
+@main_bp.route("/health")
+def health():
+    return {"status": "ok", "message": "WeatherDashboard running"}, 200
