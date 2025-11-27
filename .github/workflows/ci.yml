@@ -41,3 +41,31 @@ jobs:
     - name: Build application (import test)
       run: |
         python -c "import app; print('App imports correctly')"
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t fairouzweatherdasboardregistry.azurecr.io/weatherapp:latest .
+
+    - name: Push image to ACR
+      run: |
+        az acr login --name fairouzweatherdasboardregistry
+        docker push fairouzweatherdasboardregistry.azurecr.io/weatherapp:latest
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: weatherdashboard-fairouz  
+        images: fairouzweatherdasboardregistry.azurecr.io/weatherapp:latest
