@@ -2,46 +2,59 @@
 
 ## Weather Dashboard built with Flask and OpenWeatherMap API. Features: search weather by city, manage favourites, and store recent searches using JSON persistence.
 
-This project consists of a Weather Dashboard which displays the weather condition and related information regarding a city that a user enters. The Dashabord interacts with the user through UI/UX, and is both user-friendly & intuitive. 
+This project is a full-stack Weather Dashboard that allows users to search real-time weather conditions for any city, manage favourites, and track recent searches.
+It features a clean UI/UX, responsive design, persistent JSON storage, Docker support, CI automation, Azure deployment, and Prometheus monitoring.
 
 ![CI](https://github.com/fairouzabou/WeatherDashboard2/actions/workflows/ci.yml/badge.svg)
 ![coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)
 
 
 ## Features
-- Search real-time weather by city and country  
-- Display temperature, condition, humidity, and weather icons  
-- Manage **Favorites** (add/remove cities)  
-- Track **Recent Searches** (last 5 searches)  
-- Store user preferences in a local JSON file  
-- Simple and responsive **UI/UX** with Bootstrap  
+- Real-time weather search by city and country
+- Displays temperature, condition, humidity, and weather icons
+- Manage Favorites (add/remove cities)
+- Track Recent Searches (last 5 searches)
+- Persistent JSON storage (preferences.json)
+- Lightweight /health endpoint
+- Prometheus-formatted /metrics endpoint
+- Fully tested with pytest (97% coverage)
+- GitHub Actions CI pipeline with coverage enforcement
+- Docker containerization
+- Azure Web App for Containers compatible 
+
 
 ## Project Structure
 WeatherDashboard/
-├── app.py # Main Flask entrypoint
-├── requirements.txt # Python dependencies
-├── README.md # Project documentation
-├── pytest.ini # Pytest configuration
-├── .coverage # Coverage data file (generated automatically)
-├── htmlcov/ # HTML coverage report (generated automatically)
+├── app.py                  # Main Flask entrypoint / app factory
+├── requirements.txt        # Dependencies
+├── README.md               # Project documentation
+├── pytest.ini              # Pytest configuration
 │
 ├── data/
-│ └── preferences.json # Stores favorites and recent searches
+│   └── preferences.json    # Stores favorites + history
 │
 ├── main/
-│ └── routes.py # Flask routes
-│ └── templates/
-│ └── index.html # Frontend UI
+│   ├── __init__.py         # Blueprint setup
+│   ├── routes.py           # All HTTP routes
+│   └── templates/
+│       └── index.html      # Frontend UI
 │
+├── utils/
+│   ├── api_client.py       # Calls OpenWeatherMap API
+│   ├── storage.py          # JSON persistence logic
+│   └── metrics.py          # Request count, latency, error metrics
 │
-└── utils/
-├── api_client.py # Handles API requests to OpenWeatherMap
-└── storage.py # JSON storage logic for favorites & history
+├── tests/
+│   ├── test_api_client.py
+│   ├── test_routes.py
+│   └── test_storage.py
 │
-└── tests/
-│ └── tests_api_client.py 
-│ └── test_routes.py
-│ └── test_storage.py
+├── Dockerfile              # Containerization
+├── prometheus.yml          # Prometheus configuration
+└── .github/
+    └── workflows/
+        └── ci.yml          # CI pipeline
+
 
 
 ## Requirements
@@ -62,7 +75,7 @@ Python dependencies (also listed in `requirements.txt`):
 1. **Clone the repository**
    ```bash
    git clone https://github.com/fairouabou/WeatherDashboard.git
-   cd WeatherDashboard
+   cd WeatherDashboard2
 
 2. **Create and activate a virtual environment**
    ```bash
@@ -73,6 +86,7 @@ Python dependencies (also listed in `requirements.txt`):
 3. **Install dependencies**
    ```bash
     pip install -r requirements.txt
+
 
 4. **Setup environment variables**
     *Create a .env file in the project root.
@@ -114,4 +128,63 @@ The pipeline is located at:
 .github/workflows/ci.yml
 
 
-expansion of the project: 
+## Docker:
+Build the Docker image
+docker build -t weatherdashboard .
+
+Run the container
+Flask listens on port 5000 internally—host port mapped to 5001:
+
+docker run -p 5001:5000 weatherdashboard
+
+Open the dashboard at:
+
+## Azure Deployment:
+The app can be deployed using:
+Azure Container Registry (ACR)
+Azure Web App for Containers
+
+**Deployment Steps**
+- Build Docker image
+- Tag and push to ACR
+- Create Azure Web App for Containers
+- Set container port to 5001
+- Add environment variable in Azure:
+WEATHER_API_KEY=<your_key>
+- Start the web app: The cloud version behaves exactly like the local version.
+https://weatherdashboard-fairouz-container-api-g7cxfuckcycbcqae.westeurope-01.azurewebsites.net
+
+## Monitoring 
+**Health Check**
+- Check if the app is running:
+http://localhost:5001/health
+
+- Prometheus Metrics
+http://localhost:5001/metrics
+
+Metrics include:
+- Total request count
+- Total error count
+- Average latency
+
+**Run Prometheus**
+Place prometheus.yml in your Prometheus installation folder
+Run:
+./prometheus --config.file=prometheus.yml
+Open Prometheus UI: 
+http://localhost:9090/query?g0.expr=weather_request_count&g0.show_tree=0&g0.tab=table&g0.range_input=1h&g0.res_type=auto&g0.res_density=medium&g0.display_mode=lines&g0.show_exemplars=0
+Query:
+- weather_request_count, 
+- weather_error_count, 
+- weather_request_latency_seconds.
+
+## Expansion of the Project
+Future improvements may include:
+- Adding authentication for user-specific dashboards
+- Migrating storage from JSON to PostgreSQL or Azure MySQL
+- Enhancing UI with real-time weather graphs
+- Docker Compose setup for multi-service architecture
+- Deploying a full Prometheus + Grafana stack
+- Adding logging aggregation using ELK or Azure Monitor
+
+
