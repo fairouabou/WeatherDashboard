@@ -18,21 +18,21 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Log in to ACR
+    - name: Log in to Azure Container Registry
       run: |
-        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} \
-        --username ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+        echo "${{ secrets.AZURE_PASSWORD }}" | docker login ${{ secrets.ACR_LOGIN_SERVER }} \
+        -u ${{ secrets.AZURE_USERNAME }} --password-stdin
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/weatherapp:latest .
+        docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/weatherapp:latest .
 
     - name: Push Docker image to ACR
       run: |
-        docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/weatherapp:latest
+        docker push ${{ secrets.ACR_LOGIN_SERVER }}/weatherapp:latest
 
     - name: Deploy to Azure Web App for Containers
       uses: azure/webapps-deploy@v2
       with:
-        app-name: weatherdashboard-fairouz-container-api
-        images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/weatherapp:latest
+        app-name: ${{ secrets.WEBAPP_NAME }}
+        images: ${{ secrets.ACR_LOGIN_SERVER }}/weatherapp:latest
